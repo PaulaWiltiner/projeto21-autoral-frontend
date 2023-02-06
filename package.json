@@ -1,0 +1,82 @@
+{
+  "name": "app_letsnote",
+  "version": "1.0.0",
+  "private": true,
+  "description": "a minimalist notes app",
+  "author": "",
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "@tiptap/extension-bold": "^2.0.0-beta.212",
+    "@tiptap/extension-character-count": "^2.0.0-beta.212",
+    "@tiptap/extension-heading": "^2.0.0-beta.212",
+    "@tiptap/extension-highlight": "^2.0.0-beta.212",
+    "@tiptap/extension-paragraph": "^2.0.0-beta.212",
+    "@tiptap/extension-placeholder": "^2.0.0-beta.212",
+    "@tiptap/extension-task-item": "^2.0.0-beta.212",
+    "@tiptap/extension-task-list": "^2.0.0-beta.212",
+    "@tiptap/extension-text": "^2.0.0-beta.212",
+    "@tiptap/html": "^2.0.0-beta.212",
+    "@tiptap/starter-kit": "^2.0.0-beta.212",
+    "@tiptap/vue-3": "^2.0.0-beta.212",
+    "@vue/cli": "^5.0.8",
+    "core-js": "^3.8.3",
+    "moment": "^2.29.4",
+    "quill-emoji": "^0.2.0",
+    "quill-image-uploader": "^1.2.4",
+    "remixicon": "^2.5.0",
+    "uuid": "^9.0.0",
+    "v-drag": "^3.0.9",
+    "vue": "^3.2.13",
+    "vue-router": "^4.1.6",
+    "vuex": "^4.0.0-alpha.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.16",
+    "@babel/eslint-parser": "^7.12.16",
+    "@vue/cli-plugin-babel": "~5.0.0",
+    "@vue/cli-plugin-eslint": "~5.0.0",
+    "@vue/cli-service": "~5.0.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-vue": "^8.0.3",
+    "sass": "^1.58.0",
+    "sass-loader": "^13.2.0"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/vue3-essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "@babel/eslint-parser"
+    },
+    "rules": {}
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ],
+  "_id": "app_letsnote@1.0.0",
+  "bugs": {
+    "url": "https://github.com/PaulaWiltiner/app_letsnote/issues"
+  },
+  "homepage": "https://github.com/PaulaWiltiner/app_letsnote#readme",
+  "keywords": [],
+  "license": "ISC",
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PaulaWiltiner/app_letsnote.git"
+  }
+}
