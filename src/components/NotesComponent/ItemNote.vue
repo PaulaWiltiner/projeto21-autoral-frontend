@@ -1,62 +1,48 @@
 <template>
-      <!-- <button @click="deleteClick(notesL.id)" class="ri-delete-bin-line"></button> --> 
-    
-    <div class="note"  @click="onClick(notesL.id)" >
-      <div class="divdelete"><div class="ri-delete-bin-line trash" ></div></div>
-    <div :class="classNote" :data-note-id=notesL.id v-drag="{ axis:'x'}" @v-drag-end =" someFunction(notesL.id) " >
-            <div class="notes__small-title">{{ notesL.body.content.find(item => item.type==='heading').content ? notesL.body.content.find(item => item.type==='heading').content[0].text : 'No Title'}}</div>
-            <div class="notes__small-body">
-              {{ notesL.body.content.find(item => item.type==='paragraph') && notesL.body.content.find(item => item.type==='paragraph').content ? notesL.body.content.find(item => item.type==='paragraph').content.find(item => item.type==='text').text.substring(0,30) : 'Write here...' }}
-              {{ notesL.body.content.find(item => item.type==='paragraph') && notesL.body.content.find(item => item.type==='paragraph').content ? (notesL.body.content.find(item => item.type==='paragraph').content.find(item => item.type==='text').text.length > 30 ? "..." : "" ) : ''}}
-            </div>
-            <div class="notes__small-updated">
-                {{ formatDate(notesL.updated) }}
-            </div>
-            
-        </div>
-      </div>
-  
-
+  <div>
+    <div class="notes__small-title">
+      {{ title }}
+    </div>
+    <div class="notes__small-body">
+      {{ body }}
+    </div>
+    <div class="notes__small-updated">
+      {{ formatDate }}
+    </div>
+  </div>
 </template>
-<script>
+<script setup>
+import moment from "moment";
 
-import moment from 'moment';
-import { store } from '../../store'
-import NotesAPI from './NotesApi';
+import { defineProps, computed } from "vue";
 
-export default {
-  name: 'ItemNote',
-  props:['notesL','classNote'],
-  
-  methods:{
-    someFunction(id){
-      const elem = document.querySelector(`.notes__list-item[data-note-id="${Number(id)}"]`);
-      
-      if(elem.getBoundingClientRect().x>170){
-        this.deleteClick(id)
-      }else{
-      const notes = NotesAPI.getAllNotes();
-      const selectedNote = notes.find(note => note.id === Number(id))
-      store.commit('add',[selectedNote] );
-      
-      document.querySelectorAll(".notes__list-item").forEach(noteListItem => {
-            noteListItem.classList.remove("notes__list-item--selected");
-        });
-      document.querySelector(`.notes__list-item[data-note-id="${Number(id)}"]`).classList.add("notes__list-item--selected");
+const props = defineProps(["notesL"]);
 
-      }
-    },
-    formatDate(value) {
-      if (value) {
-        return moment(String(value)).format('MM/DD/YYYY hh:mm a')
-      }
-    },
-    
-   deleteClick(id){
-      const newNotes =NotesAPI.deleteNote(id);
-      store.commit('addNote', newNotes );
-      store.commit('add', [newNotes[0]] );
-   }
-   }
- }
+const title = computed(() => {
+  return props.notesL.body.content.find((item) => item.type === "heading")
+    .content
+    ? props.notesL.body.content.find((item) => item.type === "heading")
+        .content[0].text
+    : "No Title";
+});
+
+const formatDate = computed(() => {
+  if (props.notesL.updated) {
+    return moment(String(props.notesL.updated)).format("MM/DD/YYYY hh:mm a");
+  }
+  return "";
+});
+
+const body = computed(() => {
+  const notesL = props.notesL.body.content;
+  const paragraph = notesL.find((item) => item.type === "paragraph");
+  const txt = paragraph?.content?.find((item) => item.type === "text");
+  if (txt) {
+    return txt.text.length > 25
+      ? txt.text.substring(0, 25) + "..."
+      : txt.text.substring(0, 25);
+  } else {
+    return "Write here...";
+  }
+});
 </script>
