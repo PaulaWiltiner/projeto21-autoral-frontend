@@ -20,7 +20,7 @@ npm run build
 npm run lint
 ```
 
-### JSON SERVER
+### Json Server - Fake Api
 ```
 json-server --watch json-server.json
 ```
