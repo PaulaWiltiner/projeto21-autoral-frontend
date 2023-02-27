@@ -22,7 +22,7 @@ npm run lint
 
 ### Json Server - Fake Api
 ```
-json-server --watch json-server.json
+json-server db.json -m ./node_modules/json-server-auth
 ```
 
 ### Customize configuration
