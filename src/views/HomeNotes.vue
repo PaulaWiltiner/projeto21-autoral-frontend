@@ -1,18 +1,40 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
+  <v-layout>
+    <v-app-bar color="#fcaa67">
+      <v-menu transition="slide-y-transition">
+        <template v-slot:activator="{ props }">
+          <v-app-bar-nav-icon v-bind="props" color="#fff"></v-app-bar-nav-icon>
+        </template>
+        <v-list>
+          <v-list-item v-for="(item, i) in items" :key="i">
+            <v-list-item-title
+              ><router-link class="navigate" to="/" @click="signout">{{
+                item.title
+              }}</router-link></v-list-item-title
+            >
+          </v-list-item>
+        </v-list>
+      </v-menu>
+
+      <v-app-bar-title class="title-bar">{{ $t("myNotes") }}</v-app-bar-title>
+    </v-app-bar>
+  </v-layout>
   <div id="notes" class="notes">
-    <div class="notes__sidebar">
+    <div class="container_left">
       <div class="divButtonAdd">
-        <button class="notes__add" type="button" @click="addNote">
-          Add Note
+        <button class="notes__add" @click="addNote">
+          {{ $t("addNote") }}
         </button>
       </div>
-      <ListNotes v-if="notes.length > 0" :notesd="notes" />
+      <div class="notes__sidebar">
+        <ListNotes v-if="store.notes.length > 0" :notesd="store.notes" />
+      </div>
     </div>
     <div class="notes__preview">
       <TipTap
-        v-if="activeNote.length > 0 && notes.length > 0"
-        :actived="activeNote"
+        v-if="store.activeNote.length > 0 && store.notes.length > 0"
+        :actived="store.activeNote"
       />
     </div>
   </div>
@@ -20,33 +42,37 @@
 
 <script setup>
 import ListNotes from "../components/NotesComponent/ListNotes.vue";
-import NotesAPI from "../composables/NotesApi";
-import { store } from "../store";
+import * as NotesAPI from "../composables/NotesApi";
 import TipTap from "../components/EditorComponents/TipTap.vue";
-import { computed } from "vue";
+import { useNoteStore } from "../store";
+import { onBeforeMount, ref } from "vue";
+import i18next from "i18next";
 
-function refreshNotes() {
-  const notes = NotesAPI.getAllNotes();
+const items = ref([{ title: i18next.t("logout") }]);
+
+const store = useNoteStore();
+
+onBeforeMount(() => {
+  const user = localStorage.getItem("user");
+  store.addUserToken(JSON.parse(user));
+  refreshNotes();
+});
+
+function signout() {
+  store.addUserToken({});
+  localStorage.removeItem("user");
+}
+
+async function refreshNotes() {
+  const notes = await NotesAPI.getAllNotes(store.userToken.user.id);
 
   if (notes.length > 0) {
-    store.commit("addNote", notes);
-    store.commit("add", [notes[0]]);
+    store.addNote(notes);
+    store.addActivedNote([notes[0]]);
   }
 }
 
-refreshNotes();
-
-const activeNote = computed(() => {
-  const str = JSON.stringify(store.state.activeNote);
-  return JSON.parse(str);
-});
-
-const notes = computed(() => {
-  const str = JSON.stringify(store.state.notes);
-  return JSON.parse(str);
-});
-
-function addNote() {
+async function addNote() {
   const newNote = {
     body: {
       type: "doc",
@@ -60,18 +86,33 @@ function addNote() {
     },
   };
 
-  const newNt = NotesAPI.saveNote(newNote);
-  store.commit("add", [newNt]);
+  const newNt = await NotesAPI.saveNote(newNote, store.userToken.user.id);
+  store.addActivedNote(newNt);
   refreshNotes();
 }
 </script>
 
 <style>
+.navigate {
+  text-decoration: none;
+  color: black;
+}
+.title-bar {
+  color: #fff;
+  font-weight: bold !important;
+  font-size: 25px !important;
+}
+.navigate {
+  text-decoration: none;
+  color: black;
+}
 .note {
-  height: 134px;
+  height: 114px;
+  position: relative;
+  margin-bottom: 20px;
 }
 .trash {
-  font-size: 27px;
+  font-size: 23px;
   color: #fff;
   position: absolute;
   top: 39px;
@@ -80,22 +121,23 @@ function addNote() {
 
 .two {
   top: 39px;
-  left: 229px;
+  left: 212px;
 }
 
 .divdelete {
   z-index: 1;
   background: #fd615c;
   border-radius: 7px;
-  position: relative;
-  height: 114px;
-  width: 284px;
-  top: 115px;
+  position: absolute;
+  height: 108px;
+  width: 265px;
+  top: 3px;
 }
 
 .notes {
   display: flex;
-  height: 800px;
+  max-height: 800px;
+  margin-top: 100px;
 }
 
 .notes * {
@@ -106,9 +148,11 @@ function addNote() {
   border-right: 2px solid #fff;
   flex-shrink: 0;
   padding: 1em;
-  width: 300px;
-  height: 100%;
+  width: 20em;
+  max-height: 650px;
+  min-height: 500px;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .notes__add {
@@ -117,19 +161,16 @@ function addNote() {
   border-radius: 7px;
   color: #ffffff;
   cursor: pointer;
-  font-size: 1.25em;
+  font-size: 1.2em;
   font-weight: bold;
   margin-bottom: 1em;
-  padding: 0.75em 0;
-  width: 300px;
+  height: 53px;
+  width: 270px;
 }
 
 .divButtonAdd {
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  z-index: 1000;
-  width: 354px;
+  z-index: 1;
+  width: 300px;
   height: 100px;
   display: flex;
   padding-top: 10px;
@@ -150,7 +191,12 @@ function addNote() {
   border-radius: 7px;
   padding: 2px;
   margin-bottom: 2px;
+  height: 112px;
   z-index: 2;
+  top: 0px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.08);
 }
 
@@ -170,16 +216,18 @@ function addNote() {
   font-size: 1.2em;
   height: 20px;
   color: #f99c50;
-  margin-bottom: 10px;
+  margin-bottom: 25px;
 }
 
 .notes__small-body {
   padding: 0 10px;
+  font-size: 0.9em;
   height: 24px;
 }
 
 .notes__small-updated {
   color: #aaaaaa;
+  font-size: 0.85em;
   font-style: italic;
   text-align: right;
 }
@@ -190,7 +238,8 @@ function addNote() {
   flex-grow: 1;
   padding: 0.75em 0;
   z-index: 1000;
-  height: 100%;
+  max-height: 700px;
+  max-width: 1200px;
   background-color: #ffe4b5;
 }
 
@@ -204,13 +253,5 @@ function addNote() {
 .notes__title {
   font-size: 3em;
   font-weight: bold;
-}
-
-.notes__body {
-  flex-grow: 1;
-  font-size: 1.2em;
-  line-height: 1.5;
-  margin-top: 2em;
-  resize: none;
 }
 </style>

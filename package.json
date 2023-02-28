@@ -26,16 +26,21 @@
     "@tiptap/vue-3": "^2.0.0-beta.212",
     "@vue/cli": "^5.0.8",
     "core-js": "^3.8.3",
+    "i18next": "^22.4.10",
+    "i18next-browser-languagedetector": "^7.0.1",
+    "i18next-vue": "^2.1.1",
     "moment": "^2.29.4",
+    "pinia": "^2.0.32",
     "quill-emoji": "^0.2.0",
     "quill-image-uploader": "^1.2.4",
     "remixicon": "^2.5.0",
     "uuid": "^9.0.0",
+    "vee-validate": "^4.7.4",
     "vue": "^3.2.13",
     "vue-draggable-next": "^2.1.1",
     "vue-router": "^4.1.6",
-    "vue3-touch-events": "^4.1.0",
-    "vuex": "^4.0.0-alpha.1"
+    "vue-typewriter-next": "^0.1.2",
+    "vuetify": "^3.1.6"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
@@ -46,6 +51,7 @@
     "@vue/cli-service": "~5.0.0",
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.0.3",
+    "json-server-auth": "^2.1.0",
     "sass": "^1.58.0",
     "sass-loader": "^13.2.0",
     "v-drag": "^3.0.9"

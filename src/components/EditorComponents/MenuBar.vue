@@ -79,12 +79,6 @@ const items = ref([
     isActive: () => editor.value.isActive("bulletList"),
   },
   {
-    icon: "list-ordered",
-    title: "Ordered List",
-    action: () => editor.value.chain().focus().toggleOrderedList().run(),
-    isActive: () => editor.value.isActive("orderedList"),
-  },
-  {
     icon: "list-check-2",
     title: "Task List",
     action: () => editor.value.chain().focus().toggleTaskList().run(),

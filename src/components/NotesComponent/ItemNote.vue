@@ -13,6 +13,7 @@
 </template>
 <script setup>
 import moment from "moment";
+import i18next from "i18next";
 
 import { defineProps, computed } from "vue";
 
@@ -23,7 +24,7 @@ const title = computed(() => {
     .content
     ? props.notesL.body.content.find((item) => item.type === "heading")
         .content[0].text
-    : "No Title";
+    : i18next.t("noTitle");
 });
 
 const formatDate = computed(() => {
@@ -42,7 +43,7 @@ const body = computed(() => {
       ? txt.text.substring(0, 25) + "..."
       : txt.text.substring(0, 25);
   } else {
-    return "Write here...";
+    return i18next.t("discNote");
   }
 });
 </script>

@@ -1,18 +1,28 @@
-import { createStore } from "vuex";
+import { defineStore } from "pinia";
+import { ref } from "vue";
 
-export const store = new createStore({
-  state: {
-    activeNote: [],
-    notes: [],
-  },
-  mutations: {
-    add(state, note) {
-      state.activeNote = note;
-    },
-    addNote(state, note) {
-      state.notes = note;
-    },
-  },
+export const useNoteStore = defineStore("notes", () => {
+  const activeNote = ref([]);
+  const notes = ref([]);
+  const userToken = ref({});
+
+  function addActivedNote(note) {
+    activeNote.value = note;
+  }
+  function addNote(note) {
+    notes.value = note;
+  }
+  function addUserToken(value) {
+    userToken.value = value;
+  }
+  return {
+    activeNote,
+    notes,
+    addActivedNote,
+    addNote,
+    addUserToken,
+    userToken,
+  };
   // getters: {
 
   // }

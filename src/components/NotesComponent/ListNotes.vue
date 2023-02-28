@@ -14,7 +14,7 @@
         :data-note-id="note.id"
         v-drag="{ axis: 'x' }"
         @v-drag-start="activeCard(note.id)"
-        @touchend="endCard($event, note.id)"
+        @mouseup="endCard($event, note.id)"
         @v-drag-moving="moveCard(note.id)"
       />
     </div>
@@ -24,8 +24,10 @@
 <script setup>
 import Tnotes from "./ItemNote.vue";
 import { defineProps, computed, ref, onUpdated, onMounted } from "vue";
-import { store } from "../../store";
-import NotesAPI from "../../composables/NotesApi";
+import * as NotesAPI from "../../composables/NotesApi";
+import { useNoteStore } from "../../store";
+
+const store = useNoteStore();
 
 const listNote = ref("");
 
@@ -36,10 +38,11 @@ onMounted(() => {
   transitionCard(props.notesd[0].id);
 });
 
-function deleteClick(id) {
-  const newNotes = NotesAPI.deleteNote(id);
-  store.commit("addNote", newNotes);
-  store.commit("add", [newNotes[0]]);
+async function deleteClick(id) {
+  const newNotes = await NotesAPI.deleteNote(id, store.userToken.user.id);
+
+  store.addNote(newNotes);
+  store.addActivedNote([newNotes[0]]);
   transitionCard(props.notesd[0].id);
 }
 
@@ -48,12 +51,17 @@ function endCard(event, id) {
     `.notes__list-item[data-note-id="${Number(id)}"]`
   );
   const coordX = event.view.data.relativeX;
+  console.log(elem.style);
   if (Number(coordX) > 126.5 || Number(coordX) < -113) {
+    elem.setAttribute("disabled", "");
     deleteClick(id);
     event.view.data.relativeX = 0;
+    elem.style.left = 0;
+    elem.style.transition = "left 1s";
   } else {
     if (elem) {
       event.view.data.relativeX = 0;
+      elem.style.left = 0;
       elem.style.transition = "left 1s";
     }
   }
@@ -97,10 +105,9 @@ function transitionCard(id) {
     .classList.add("notes__list-item--selected");
 }
 
-function activeCard(id) {
-  const notes = NotesAPI.getAllNotes();
-  const selectedNote = notes.find((note) => note.id === Number(id));
-  store.commit("add", [selectedNote]);
+async function activeCard(id) {
+  const note = await NotesAPI.getOneNote(id);
+  store.addActivedNote([note]);
 
   transitionCard(id);
 }
@@ -108,8 +115,9 @@ function activeCard(id) {
 
 <style scoped>
 .riseButton {
-  font-size: 36px;
+  font-size: 30px;
   color: rgb(49, 40, 40);
+  top: 30px;
   transition: font-size 0.4s;
 }
 </style>

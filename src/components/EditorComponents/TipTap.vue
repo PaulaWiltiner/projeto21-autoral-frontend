@@ -5,8 +5,7 @@
   </div>
 </template>
 <script setup>
-import NotesAPI from "../../composables/NotesApi";
-import { store } from "../../store";
+import * as NotesAPI from "../../composables/NotesApi";
 import Bold from "@tiptap/extension-bold";
 import Paragraph from "@tiptap/extension-paragraph";
 import Text from "@tiptap/extension-text";
@@ -20,8 +19,18 @@ import Placeholder from "@tiptap/extension-placeholder";
 import StarterKit from "@tiptap/starter-kit";
 import { Editor, EditorContent } from "@tiptap/vue-3";
 import Heading from "@tiptap/extension-heading";
-import { defineProps, ref, watch, onMounted, computed } from "vue";
+import {
+  defineProps,
+  onBeforeUnmount,
+  ref,
+  watch,
+  onMounted,
+  computed,
+} from "vue";
 import MenuBar from "./MenuBar.vue";
+import { useNoteStore } from "../../store";
+
+const store = useNoteStore();
 
 const CustomDocument = Document.extend({
   content: "heading block*",
@@ -68,21 +77,25 @@ onMounted(() => {
       Heading,
       // other extensions …
     ]),
-    onUpdate() {
+    async onUpdate() {
       const json = editor.value.getJSON();
       actived.value[0].body = json;
-      store.commit("add", [actived.value[0]]);
-      NotesAPI.saveNote(actived.value[0]);
+      store.addActivedNote([actived.value[0]]);
+      await NotesAPI.saveNote(actived.value[0], store.userToken.user.id);
       refreshNotes();
     },
   });
 });
 
-function refreshNotes() {
-  const notes = NotesAPI.getAllNotes();
+onBeforeUnmount(() => {
+  editor.value.destroy();
+});
 
-  store.commit("addNote", notes);
-  store.commit("add", [notes[0]]);
+async function refreshNotes() {
+  const notes = await NotesAPI.getAllNotes(store.userToken.user.id);
+
+  store.addNote(notes);
+  store.addActivedNote([notes[0]]);
 }
 
 watch(actived, (to, from) => {
@@ -96,11 +109,11 @@ watch(actived, (to, from) => {
 .editor {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  width: 1000px;
+  max-width: 1100px;
   color: #0d0d0d;
   background-color: #ffe4b5;
   margin: 0 5% 2% 5%;
+  font-size: 14px;
 
   &__header {
     display: flex;
@@ -168,7 +181,8 @@ watch(actived, (to, from) => {
 
   padding: 5px 20px 5px 20px;
   margin-top: -0.7em;
-  height: 750px;
+  min-height: 600px;
+  max-height: 700px;
 
   ul,
   ol {

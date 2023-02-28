@@ -1,35 +1,52 @@
-export default class NotesAPI {
-  static getAllNotes() {
-    const notes = JSON.parse(localStorage.getItem("notesapp-notes") || "[]");
+import * as methodsApi from "../api/resources/methodsApi";
 
-    return notes.sort((a, b) => {
-      return new Date(a.updated) > new Date(b.updated) ? -1 : 1;
-    });
+export async function getAllNotes(userId) {
+  // await methodsApi.postData(
+  //   false,
+  //   {
+  //     email: "ola@email.com",
+  //     password: "1234",
+  //   },
+  //   "/signin"
+  // );
+  const notes = await methodsApi.getData(true, `/600/notes?userId=${userId}`);
+
+  return notes.sort((a, b) => {
+    return new Date(a.updated) > new Date(b.updated) ? -1 : 1;
+  });
+}
+
+export async function getOneNote(id) {
+  const note = await methodsApi.getData(true, `/600/notes/${id}`);
+
+  return note;
+}
+
+export async function saveNote(noteToSave, userId) {
+  // Edit/Update
+
+  if (noteToSave.id) {
+    const notes = await methodsApi.getData(true, `/600/notes/${noteToSave.id}`);
+    notes.body = noteToSave.body;
+    notes.updated = new Date().toISOString();
+    await methodsApi.putData(true, noteToSave, `/600/notes/${noteToSave.id}`);
+  } else {
+    noteToSave.updated = new Date().toISOString();
+    noteToSave.userId = userId;
+    await methodsApi.postData(false, noteToSave, `/notes`);
   }
 
-  static saveNote(noteToSave) {
-    const notes = NotesAPI.getAllNotes();
-    const existing = notes.find((note) => note.id == noteToSave.id);
+  return noteToSave;
+}
 
-    // Edit/Update
-    if (existing) {
-      existing.body = noteToSave.body;
-      existing.updated = new Date().toISOString();
-    } else {
-      noteToSave.id = Math.floor(Math.random() * 1000000);
-      noteToSave.updated = new Date().toISOString();
-      notes.push(noteToSave);
-    }
+export async function deleteNote(id, userId) {
+  methodsApi.deleteData(true, `/600/notes/${id}`);
+  const newNotes = await methodsApi.getData(
+    true,
+    `/600/notes?userId=${userId}`
+  );
 
-    localStorage.setItem("notesapp-notes", JSON.stringify(notes));
-    return noteToSave;
-  }
-
-  static deleteNote(id) {
-    const notes = NotesAPI.getAllNotes();
-    const newNotes = notes.filter((note) => note.id !== Number(id));
-
-    localStorage.setItem("notesapp-notes", JSON.stringify(newNotes));
-    return newNotes;
-  }
+  return newNotes.sort((a, b) => {
+    return new Date(a.updated) > new Date(b.updated) ? -1 : 1;
+  });
 }
