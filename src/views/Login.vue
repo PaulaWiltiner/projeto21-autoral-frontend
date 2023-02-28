@@ -20,7 +20,9 @@
       <v-app-bar-title class="title-bar">{{ $t("login") }}</v-app-bar-title>
     </v-app-bar>
   </v-layout>
+
   <div class="container-form">
+    <h1 class="title-login">Let's Note |</h1>
     <v-row justify="center" align-content="center">
       <v-col class="collumn">
         <v-card justify="center" width="650" ref="form">
@@ -146,6 +148,10 @@ const submit = handleSubmit(async (values) => {
 </script>
 
 <style scoped>
+.title-login {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  margin-bottom: 100px;
+}
 .collumn {
   display: flex;
   justify-content: center;
@@ -155,8 +161,8 @@ const submit = handleSubmit(async (values) => {
   color: #fcaa67;
 }
 .container-form {
-  margin-top: 120px;
-  margin-bottom: 240px;
+  margin-top: 160px;
+  margin-bottom: 140px;
 }
 
 .title-bar {

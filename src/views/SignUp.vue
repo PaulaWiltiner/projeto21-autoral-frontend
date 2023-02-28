@@ -21,6 +21,7 @@
     </v-app-bar>
   </v-layout>
   <div class="container-form">
+    <h1 class="title-login">Let's Note |</h1>
     <v-row justify="center" align-content="center">
       <v-col class="collumn">
         <v-card width="700" ref="form">
@@ -119,13 +120,17 @@ const submit = handleSubmit(async (values) => {
 </script>
 
 <style scoped>
+.title-login {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  margin-bottom: 100px;
+}
 .collumn {
   display: flex;
   justify-content: center;
   width: 100%;
 }
 .container-form {
-  margin-top: 120px;
+  margin-top: 160px;
 }
 
 .title-bar {
