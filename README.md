@@ -20,5 +20,10 @@ npm run build
 npm run lint
 ```
 
+### Json Server - Fake Api
+```
+json-server db.json -m ./node_modules/json-server-auth
+```
+
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
