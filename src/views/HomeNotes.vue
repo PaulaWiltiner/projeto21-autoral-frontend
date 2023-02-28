@@ -32,10 +32,7 @@
       </div>
     </div>
     <div class="notes__preview">
-      <TipTap
-        v-if="store.activeNote.length > 0 && store.notes.length > 0"
-        :actived="store.activeNote"
-      />
+      <TipTap v-if="store.activeNote.length > 0 && store.notes.length > 0" />
     </div>
   </div>
 </template>
@@ -51,7 +48,6 @@ import i18next from "i18next";
 const items = ref([{ title: i18next.t("logout") }]);
 
 const store = useNoteStore();
-
 onBeforeMount(() => {
   const user = localStorage.getItem("user");
   store.addUserToken(JSON.parse(user));
@@ -66,10 +62,8 @@ function signout() {
 async function refreshNotes() {
   const notes = await NotesAPI.getAllNotes(store.userToken.user.id);
 
-  if (notes.length > 0) {
-    store.addNote(notes);
-    store.addActivedNote([notes[0]]);
-  }
+  store.addNote(notes);
+  store.addActivedNote([notes[0]]);
 }
 
 async function addNote() {
@@ -87,8 +81,10 @@ async function addNote() {
   };
 
   const newNt = await NotesAPI.saveNote(newNote, store.userToken.user.id);
-  store.addActivedNote(newNt);
-  refreshNotes();
+  if (newNt) {
+    store.addActivedNote([newNt]);
+    refreshNotes();
+  }
 }
 </script>
 

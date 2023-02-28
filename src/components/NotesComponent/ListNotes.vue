@@ -51,7 +51,7 @@ function endCard(event, id) {
     `.notes__list-item[data-note-id="${Number(id)}"]`
   );
   const coordX = event.view.data.relativeX;
-  console.log(elem.style);
+
   if (Number(coordX) > 126.5 || Number(coordX) < -113) {
     elem.setAttribute("disabled", "");
     deleteClick(id);

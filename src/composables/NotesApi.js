@@ -30,13 +30,13 @@ export async function saveNote(noteToSave, userId) {
     notes.body = noteToSave.body;
     notes.updated = new Date().toISOString();
     await methodsApi.putData(true, noteToSave, `/600/notes/${noteToSave.id}`);
+    return noteToSave;
   } else {
     noteToSave.updated = new Date().toISOString();
     noteToSave.userId = userId;
-    await methodsApi.postData(false, noteToSave, `/notes`);
+    const newNote = await methodsApi.postData(false, noteToSave, `/notes`);
+    return newNote;
   }
-
-  return noteToSave;
 }
 
 export async function deleteNote(id, userId) {

@@ -8,6 +8,7 @@ export const useNoteStore = defineStore("notes", () => {
 
   function addActivedNote(note) {
     activeNote.value = note;
+    return activeNote;
   }
   function addNote(note) {
     notes.value = note;

@@ -19,26 +19,17 @@ import Placeholder from "@tiptap/extension-placeholder";
 import StarterKit from "@tiptap/starter-kit";
 import { Editor, EditorContent } from "@tiptap/vue-3";
 import Heading from "@tiptap/extension-heading";
-import {
-  defineProps,
-  onBeforeUnmount,
-  ref,
-  watch,
-  onMounted,
-  computed,
-} from "vue";
+import { onBeforeUnmount, ref, watch, onMounted, computed } from "vue";
 import MenuBar from "./MenuBar.vue";
 import { useNoteStore } from "../../store";
 
 const store = useNoteStore();
 
+const actived = computed(() => store.activeNote);
 const CustomDocument = Document.extend({
   content: "heading block*",
 });
 
-const props = defineProps(["actived"]);
-
-const actived = computed(() => props.actived);
 const editor = ref(null);
 
 onMounted(() => {
@@ -98,11 +89,14 @@ async function refreshNotes() {
   store.addActivedNote([notes[0]]);
 }
 
-watch(actived, (to, from) => {
-  if (to[0].id !== from[0].id) {
-    editor.value.commands.setContent(to[0].body);
+watch(
+  () => store.activeNote,
+  (to, from) => {
+    if (to[0].id !== from[0].id) {
+      editor.value.commands.setContent(to[0].body);
+    }
   }
-});
+);
 </script>
 
 <style lang="scss">
