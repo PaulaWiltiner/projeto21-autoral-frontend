@@ -1,0 +1,12 @@
+version: '3'
+services:
+  web:
+    build: .
+    ports:
+      - "80:80"
+
+
+networks:
+  fullstack-network:
+    name: fullstack-network
+    external: true

@@ -24,6 +24,7 @@
     "@tiptap/html": "^2.0.0-beta.212",
     "@tiptap/starter-kit": "^2.0.0-beta.212",
     "@tiptap/vue-3": "^2.0.0-beta.212",
+    "@types/bcrypt": "^5.0.0",
     "@vue/cli": "^5.0.8",
     "core-js": "^3.8.3",
     "i18next": "^22.4.10",

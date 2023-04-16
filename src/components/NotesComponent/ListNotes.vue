@@ -39,7 +39,7 @@ onMounted(() => {
 });
 
 async function deleteClick(id) {
-  const newNotes = await NotesAPI.deleteNote(id, store.userToken.user.id);
+  const newNotes = await NotesAPI.deleteNote(id);
 
   store.addNote(newNotes);
   store.addActivedNote([newNotes[0]]);

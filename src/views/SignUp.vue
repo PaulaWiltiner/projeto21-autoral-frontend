@@ -97,7 +97,7 @@ const { handleSubmit, handleReset, setErrors } = useForm({
       return i18next.t("errorEmail");
     },
     password(value) {
-      if (value?.length >= 4) return true;
+      if (value?.length >= 6) return true;
       return i18next.t("errorPassword");
     },
   },
@@ -108,10 +108,11 @@ const password = useField("password");
 
 const submit = handleSubmit(async (values) => {
   const data = values;
-  const resp = await mathodsApi.postData(false, data, "/users");
-  if (resp === "Email already exists") {
+  const resp = await mathodsApi.postData(false, data, "/signUp");
+
+  if (resp === 409) {
     setErrors({
-      email: i18next.t("errorSignupEmail"),
+      email: i18next.t("errorSignUpEmail"),
     });
   } else {
     router.replace({ path: "/" });

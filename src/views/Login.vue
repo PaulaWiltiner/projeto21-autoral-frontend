@@ -117,7 +117,7 @@ const { handleSubmit, handleReset, setErrors } = useForm({
       return i18next.t("errorEmail");
     },
     password(value) {
-      if (value?.length >= 4) return true;
+      if (value?.length >= 6) return true;
       return i18next.t("errorPassword");
     },
   },
@@ -127,12 +127,12 @@ const password = useField("password");
 
 const submit = handleSubmit(async (values) => {
   const data = values;
-  const resp = await mathodsApi.postData(false, data, "/signin");
-  if (resp === "Cannot find user") {
+  const resp = await mathodsApi.postData(false, data, "/signIn");
+  if (resp === 404) {
     setErrors({
       email: i18next.t("errorLoginEmail"),
     });
-  } else if (resp === "Incorrect password") {
+  } else if (resp === 422) {
     setErrors({
       password: i18next.t("errorLoginPassword"),
     });

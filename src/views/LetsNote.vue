@@ -14,7 +14,7 @@ const userName = ref("");
 
 onBeforeMount(() => {
   const user = localStorage.getItem("user");
-  userName.value = JSON.parse(user).user.name;
+  userName.value = JSON.parse(user).username;
 });
 </script>
 

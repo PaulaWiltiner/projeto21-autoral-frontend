@@ -70,9 +70,18 @@ onMounted(() => {
     ]),
     async onUpdate() {
       const json = editor.value.getJSON();
-      actived.value[0].body = json;
-      store.addActivedNote([actived.value[0]]);
-      await NotesAPI.saveNote(actived.value[0], store.userToken.user.id);
+      console.log(actived.value[0], "olaß");
+      store.addActivedNote([
+        {
+          id: actived.value[0].id,
+          body: json,
+          updated: actived.value[0].updated,
+          userId: actived.value[0].userId,
+        },
+      ]);
+      actived.value[0].body = JSON.stringify(json);
+      console.log(actived.value[0], "actived.value[0]");
+      await NotesAPI.saveNote(actived.value[0], store.userToken.userId);
       refreshNotes();
     },
   });
@@ -83,7 +92,8 @@ onBeforeUnmount(() => {
 });
 
 async function refreshNotes() {
-  const notes = await NotesAPI.getAllNotes(store.userToken.user.id);
+  const notes = await NotesAPI.getAllNotes();
+  console.log(notes, "refresh");
 
   store.addNote(notes);
   store.addActivedNote([notes[0]]);

@@ -54,13 +54,14 @@ onBeforeMount(() => {
   refreshNotes();
 });
 
-function signout() {
+async function signout() {
+  await NotesAPI.signOut();
   store.addUserToken({});
   localStorage.removeItem("user");
 }
 
 async function refreshNotes() {
-  const notes = await NotesAPI.getAllNotes(store.userToken.user.id);
+  const notes = await NotesAPI.getAllNotes();
 
   store.addNote(notes);
   store.addActivedNote([notes[0]]);
@@ -68,19 +69,21 @@ async function refreshNotes() {
 
 async function addNote() {
   const newNote = {
-    body: {
-      type: "doc",
-      content: [
-        { type: "heading", content: [{ type: "text", text: "New Note" }] },
-        {
-          type: "paragraph",
-          content: [{ type: "text", text: "Write here" }],
-        },
-      ],
-    },
+    type: "doc",
+    content: [
+      { type: "heading", content: [{ type: "text", text: "New Note" }] },
+      {
+        type: "paragraph",
+        content: [{ type: "text", text: "Write here" }],
+      },
+    ],
   };
 
-  const newNt = await NotesAPI.saveNote(newNote, store.userToken.user.id);
+  const newNt = await NotesAPI.saveNote(
+    JSON.stringify(newNote),
+    store.userToken.userId
+  );
+
   if (newNt) {
     store.addActivedNote([newNt]);
     refreshNotes();
