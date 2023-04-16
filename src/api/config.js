@@ -2,5 +2,5 @@ export const APISettings = {
   headers: new Headers({
     Accept: "application/json",
   }),
-  baseURL: "http://localhost:5001",
+  baseURL: "http://i-07e925caec86c9ddc:80/api",
 };
